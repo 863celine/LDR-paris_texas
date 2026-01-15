@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lana Del Rey - paris, texas</title>
+    <!-- Link para o favicon no seu servidor -->
+    <link rel="icon" type="image/x-icon" href="http://localhost:8000/favicon.ico">
+    <style>
+        /* Define o fundo como branco e remove margens padrão */
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: sans-serif;
+            cursor: default;
+        }
+
+        /* Estilização da coluna horizontal larga - Posicionada um pouco mais para baixo */
+        .central-element {
+            width: 380px; 
+            height: 80px; /* Leve aumento na altura para acomodar o deslocamento */
+            border: 1px dotted #000; 
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 8px 12px; 
+            box-sizing: border-box;
+            position: relative;
+            transform: translateY(20px); /* Move a coluna inteira para baixo */
+        }
+
+        /* Container para os textos e controles */
+        .player-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100%;
+        }
+
+        /* Estilo do texto interno */
+        .track-info {
+            font-size: 10px;
+            text-transform: lowercase;
+            color: #000;
+            letter-spacing: 1px;
+            margin-bottom: 8px; /* Aumentado para dar espaço entre título e controles */
+        }
+
+        /* Controles de música - Posicionados mais para baixo em relação ao título */
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 5px; /* Empurra os controles mais para baixo dentro da coluna */
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            cursor: none; /* Oculta cursor padrão para usar o tooltip personalizado */
+            font-size: 14px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+        }
+
+        /* Link na imagem */
+        .album-link {
+            display: block;
+            height: 55px;
+            width: 55px;
+            text-decoration: none;
+            /* Cursor personalizado do seu servidor aplicado aqui */
+            cursor: url('http://localhost:8000/cursor_personalizado.cur'), auto;
+        }
+
+        /* Estilo da imagem no lado direito */
+        .album-cover {
+            height: 100%; 
+            width: 100%;
+            border: 1px solid #000; 
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Tooltip personalizado unificado */
+        #custom-tooltip {
+            position: fixed;
+            display: none;
+            background: #fff;
+            border: 1px solid #000;
+            padding: 4px 8px;
+            font-size: 9px;
+            text-transform: lowercase;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 1000;
+            letter-spacing: 0.5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-tooltip"></div>
+
+    <!-- Áudio invisível -->
+    <audio id="audio-player" src="http://localhost:8000/paris_texas.mp3"></audio>
+
+    <div class="central-element">
+        <div class="player-content">
+            <span class="track-info">lana del rey - paris, texas ft. syml</span>
+            
+            <div class="controls">
+                <button class="control-btn" id="rewind" data-tip="rewind 5s">↻</button>
+                <button class="control-btn" id="play" data-tip="play">▶</button>
+                <button class="control-btn hidden" id="pause" data-tip="pause">❚❚</button>
+                <button class="control-btn" id="forward" data-tip="forward 5s">↺</button>
+            </div>
+        </div>
+        
+        <!-- Link clicável na imagem -->
+        <a href="https://www.lanadelrey.com" target="_blank" class="album-link" id="album-link" data-tip="did you know that there's a tunnel under ocean blvd (2023)">
+            <img 
+                src="https://e.snmc.io/i/300/w/7ca41499c67cccc9d8ad4546be945476/10745432" 
+                alt="Capa do álbum" 
+                class="album-cover"
+            >
+        </a>
+    </div>
+
+    <script>
+        // Animação do Título
+        const titles = ["Lana", "Del", "Rey", "paris, texas ♫"];
+        let currentIndex = 0;
+        setInterval(() => {
+            document.title = titles[currentIndex];
+            currentIndex = (currentIndex + 1) % titles.length;
+        }, 1500);
+
+        // Lógica de Tooltip Universal que segue o cursor
+        const tooltip = document.getElementById('custom-tooltip');
+        const interactiveElements = document.querySelectorAll('[data-tip]');
+
+        interactiveElements.forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                tooltip.textContent = el.getAttribute('data-tip');
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 12) + 'px';
+                tooltip.style.top = (e.clientY + 12) + 'px';
+            });
+
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
+            });
+        });
+
+        // Lógica do Player de Áudio
+        const audio = document.getElementById('audio-player');
+        const btnPlay = document.getElementById('play');
+        const btnPause = document.getElementById('pause');
+        const btnRewind = document.getElementById('rewind');
+        const btnForward = document.getElementById('forward');
+
+        btnPlay.addEventListener('click', () => {
+            audio.play();
+            btnPlay.classList.add('hidden');
+            btnPause.classList.remove('hidden');
+        });
+
+        btnPause.addEventListener('click', () => {
+            audio.pause();
+            btnPause.classList.add('hidden');
+            btnPlay.classList.remove('hidden');
+        });
+        
+        btnRewind.addEventListener('click', () => {
+            audio.currentTime = Math.max(0, audio.currentTime - 5);
+        });
+
+        btnForward.addEventListener('click', () => {
+            audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+        });
+
+        audio.addEventListener('ended', () => {
+            btnPause.classList.add('hidden');
+            btnPlay.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
