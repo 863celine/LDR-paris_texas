@@ -24,7 +24,7 @@
         /* Estilização da coluna horizontal larga - Posicionada um pouco mais para baixo */
         .central-element {
             width: 380px; 
-            height: 80px; /* Leve aumento na altura para acomodar o deslocamento */
+            height: 80px; 
             border: 1px dotted #000; 
             display: flex;
             justify-content: space-between; 
@@ -32,7 +32,7 @@
             padding: 8px 12px; 
             box-sizing: border-box;
             position: relative;
-            transform: translateY(20px); /* Move a coluna inteira para baixo */
+            transform: translateY(20px); 
         }
 
         /* Container para os textos e controles */
@@ -49,21 +49,21 @@
             text-transform: lowercase;
             color: #000;
             letter-spacing: 1px;
-            margin-bottom: 8px; /* Aumentado para dar espaço entre título e controles */
+            margin-bottom: 8px;
         }
 
-        /* Controles de música - Posicionados mais para baixo em relação ao título */
+        /* Controles de música */
         .controls {
             display: flex;
             gap: 12px;
             align-items: center;
-            margin-top: 5px; /* Empurra os controles mais para baixo dentro da coluna */
+            margin-top: 5px;
         }
 
         .control-btn {
             background: none;
             border: none;
-            cursor: none; /* Oculta cursor padrão para usar o tooltip personalizado */
+            cursor: pointer; /* Cursor normal para os botões */
             font-size: 14px;
             padding: 0;
             display: flex;
@@ -75,11 +75,10 @@
         /* Link na imagem */
         .album-link {
             display: block;
-            height: 55px;
-            width: 55px;
+            height: 45px;
+            width: 45px;
             text-decoration: none;
-            /* Cursor personalizado do seu servidor aplicado aqui */
-            cursor: url('http://localhost:8000/cursor_personalizado.cur'), auto;
+            cursor: pointer; /* Cursor normal (mãozinha de link) para a imagem */
         }
 
         /* Estilo da imagem no lado direito */
@@ -123,10 +122,10 @@
             <span class="track-info">lana del rey - paris, texas ft. syml</span>
             
             <div class="controls">
-                <button class="control-btn" id="rewind" data-tip="rewind 5s">↻</button>
-                <button class="control-btn" id="play" data-tip="play">▶</button>
-                <button class="control-btn hidden" id="pause" data-tip="pause">❚❚</button>
-                <button class="control-btn" id="forward" data-tip="forward 5s">↺</button>
+                <button class="control-btn" id="rewind" data-tip="retroceder 5s">↻</button>
+                <button class="control-btn" id="play" data-tip="reproduzir">▶</button>
+                <button class="control-btn hidden" id="pause" data-tip="pausar">❚❚</button>
+                <button class="control-btn" id="forward" data-tip="avançar 5s">↺</button>
             </div>
         </div>
         
