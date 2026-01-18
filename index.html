@@ -21,7 +21,7 @@
             cursor: default;
         }
 
-        /* Estilização da coluna horizontal larga - Posicionada um pouco mais para baixo */
+        /* Estilização da coluna horizontal larga */
         .central-element {
             width: 380px; 
             height: 80px; 
@@ -53,17 +53,23 @@
         }
 
         /* Controles de música */
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 5px;
+        }
+
         .controls {
             display: flex;
             gap: 12px;
             align-items: center;
-            margin-top: 5px;
         }
 
         .control-btn {
             background: none;
             border: none;
-            cursor: pointer; /* Cursor normal para os botões */
+            cursor: pointer;
             font-size: 14px;
             padding: 0;
             display: flex;
@@ -72,13 +78,41 @@
             color: #000;
         }
 
+        /* Controle de Volume */
+        .volume-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .volume-icon {
+            font-size: 14px;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .volume-slider {
+            width: 0;
+            opacity: 0;
+            transition: width 0.3s, opacity 0.3s;
+            cursor: pointer;
+            accent-color: #000;
+            height: 2px;
+            margin-left: 5px;
+        }
+
+        .volume-wrapper:hover .volume-slider {
+            width: 60px;
+            opacity: 1;
+        }
+
         /* Link na imagem */
         .album-link {
             display: block;
             height: 45px;
             width: 45px;
             text-decoration: none;
-            cursor: pointer; /* Cursor normal (mãozinha de link) para a imagem */
+            cursor: pointer;
         }
 
         /* Estilo da imagem no lado direito */
@@ -115,17 +149,25 @@
     <div id="custom-tooltip"></div>
 
     <!-- Áudio invisível -->
-    <audio id="audio-player" src="paris_texas.mp3"></audio>
+    <audio id="audio-player" src="http://localhost:8000/paris_texas.mp3"></audio>
 
     <div class="central-element">
         <div class="player-content">
             <span class="track-info">lana del rey - paris, texas ft. syml</span>
             
-            <div class="controls">
-                <button class="control-btn" id="rewind" data-tip="retroceder 5s">↻</button>
-                <button class="control-btn" id="play" data-tip="reproduzir">▶</button>
-                <button class="control-btn hidden" id="pause" data-tip="pausar">❚❚</button>
-                <button class="control-btn" id="forward" data-tip="avançar 5s">↺</button>
+            <div class="controls-container">
+                <div class="controls">
+                    <button class="control-btn" id="rewind" data-tip="retroceder 5s">↻</button>
+                    <button class="control-btn" id="play" data-tip="reproduzir">▶</button>
+                    <button class="control-btn hidden" id="pause" data-tip="pausar">❚❚</button>
+                    <button class="control-btn" id="forward" data-tip="avançar 5s">↺</button>
+                </div>
+
+                <!-- Novo controle de volume com o símbolo ♫ -->
+                <div class="volume-wrapper" data-tip="volume">
+                    <span class="volume-icon">♫</span>
+                    <input type="range" id="volume-control" class="volume-slider" min="0" max="1" step="0.01" value="1">
+                </div>
             </div>
         </div>
         
@@ -150,20 +192,21 @@
 
         // Lógica de Tooltip Universal que segue o cursor
         const tooltip = document.getElementById('custom-tooltip');
-        const interactiveElements = document.querySelectorAll('[data-tip]');
-
-        interactiveElements.forEach(el => {
-            el.addEventListener('mousemove', (e) => {
-                tooltip.textContent = el.getAttribute('data-tip');
-                tooltip.style.display = 'block';
-                tooltip.style.left = (e.clientX + 12) + 'px';
-                tooltip.style.top = (e.clientY + 12) + 'px';
+        const updateTooltip = () => {
+            const interactiveElements = document.querySelectorAll('[data-tip]');
+            interactiveElements.forEach(el => {
+                el.onmousemove = (e) => {
+                    tooltip.textContent = el.getAttribute('data-tip');
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (e.clientX + 12) + 'px';
+                    tooltip.style.top = (e.clientY + 12) + 'px';
+                };
+                el.onmouseleave = () => {
+                    tooltip.style.display = 'none';
+                };
             });
-
-            el.addEventListener('mouseleave', () => {
-                tooltip.style.display = 'none';
-            });
-        });
+        };
+        updateTooltip();
 
         // Lógica do Player de Áudio
         const audio = document.getElementById('audio-player');
@@ -171,31 +214,37 @@
         const btnPause = document.getElementById('pause');
         const btnRewind = document.getElementById('rewind');
         const btnForward = document.getElementById('forward');
+        const volumeControl = document.getElementById('volume-control');
 
-        btnPlay.addEventListener('click', () => {
+        btnPlay.onclick = () => {
             audio.play();
             btnPlay.classList.add('hidden');
             btnPause.classList.remove('hidden');
-        });
+        };
 
-        btnPause.addEventListener('click', () => {
+        btnPause.onclick = () => {
             audio.pause();
             btnPause.classList.add('hidden');
             btnPlay.classList.remove('hidden');
-        });
+        };
         
-        btnRewind.addEventListener('click', () => {
+        btnRewind.onclick = () => {
             audio.currentTime = Math.max(0, audio.currentTime - 5);
-        });
+        };
 
-        btnForward.addEventListener('click', () => {
+        btnForward.onclick = () => {
             audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
-        });
+        };
 
-        audio.addEventListener('ended', () => {
+        // Controle de Volume
+        volumeControl.oninput = (e) => {
+            audio.volume = e.target.value;
+        };
+
+        audio.onended = () => {
             btnPause.classList.add('hidden');
             btnPlay.classList.remove('hidden');
-        });
+        };
     </script>
 </body>
 </html>
